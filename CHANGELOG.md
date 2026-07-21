@@ -2,6 +2,12 @@
 
 All notable changes to GitPulse are documented here.
 
+## 1.0.1 — 2026-07-21
+
+### Fixed
+
+- Made the Swift package manifest compatible with the Swift 5.10 toolchain on GitHub's Intel macOS runner, restoring universal-release builds.
+
 ## 1.0.0 — 2026-07-21
 
 ### Added
@@ -18,4 +24,3 @@ All notable changes to GitPulse are documented here.
 - Repository discovery across the user home directory, iCloud Drive, and mounted volumes.
 - Dedicated settings window that is brought to the foreground from the menu-bar popover.
 - Universal macOS app packaging for Apple Silicon and Intel Macs.
-

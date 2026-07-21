@@ -1,4 +1,10 @@
-# GitPulse 1.0.0
+# GitPulse 1.0.1
+
+## Fixed
+
+- Restored GitHub Actions universal macOS builds by supporting the runner's Swift 5.10 toolchain.
+
+## Included from 1.0.0
 
 GitPulse 1.0.0 is the first release: a native macOS menu-bar sentinel for pull requests, build health, and local Git hygiene.
 
@@ -17,4 +23,3 @@ GitPulse 1.0.0 is the first release: a native macOS menu-bar sentinel for pull r
 ## Install
 
 Download `GitPulse-universal.zip`, unzip it, and move `GitPulse.app` to Applications. On first launch, open the menu-bar icon and choose **Settings…** to add a personal access token.
-

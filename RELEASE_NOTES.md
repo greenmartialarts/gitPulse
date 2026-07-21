@@ -1,8 +1,8 @@
-# GitPulse 1.0.1
+# GitPulse 1.0.2
 
 ## Fixed
 
-- Restored GitHub Actions universal macOS builds by supporting the runner's Swift 5.10 toolchain.
+- Restored GitHub Actions universal macOS builds by supporting the runner's Swift 5.10 toolchain and compiler rules.
 
 ## Included from 1.0.0
 

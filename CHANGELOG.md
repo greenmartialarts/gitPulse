@@ -2,6 +2,12 @@
 
 All notable changes to GitPulse are documented here.
 
+## 1.0.2 — 2026-07-21
+
+### Fixed
+
+- Removed Swift 6-only notification and task-capture syntax so universal builds work on GitHub's Swift 5.10 macOS runners.
+
 ## 1.0.1 — 2026-07-21
 
 ### Fixed

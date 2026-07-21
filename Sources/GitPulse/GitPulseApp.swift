@@ -28,7 +28,7 @@ struct GitPulseApp: App {
     }
 }
 
-final class NotificationDelegate: NSObject, @preconcurrency UNUserNotificationCenterDelegate {
+final class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
     nonisolated(unsafe) static let shared = NotificationDelegate()
     nonisolated func userNotificationCenter(_: UNUserNotificationCenter, willPresent: UNNotification, withCompletionHandler completion: @escaping (UNNotificationPresentationOptions) -> Void) {
         completion([.banner, .sound])

@@ -35,7 +35,7 @@ struct AppPreferences: Codable { var githubToken: String = ""; var gitlabToken: 
     var menuSymbol: String { health.symbol }
     func save() { Keychain.save(preferences.githubToken, account: "github-token"); Keychain.save(preferences.gitlabToken, account: "gitlab-token"); var persisted = preferences; persisted.githubToken = ""; persisted.gitlabToken = ""; UserDefaults.standard.set(try? JSONEncoder().encode(persisted), forKey: "preferences") }
     func load() { if let d = UserDefaults.standard.data(forKey: "preferences"), let p = try? JSONDecoder().decode(AppPreferences.self, from: d) { preferences = p }; preferences.githubToken = Keychain.read(account: "github-token") ?? ""; preferences.gitlabToken = Keychain.read(account: "gitlab-token") ?? ""; repositories = preferences.repositories.map { LocalRepository(path: $0) }; Task { await refreshRepos() } }
-    func startPolling() { timer?.invalidate(); guard preferences.pollingEnabled else { return }; timer = Timer.scheduledTimer(withTimeInterval: Polling.interval, repeats: true) { [weak self] _ in Task { @MainActor in await self?.refresh(); self?.startPolling() } } }
+    func startPolling() { timer?.invalidate(); guard preferences.pollingEnabled else { return }; timer = Timer.scheduledTimer(withTimeInterval: Polling.interval, repeats: true) { [weak self] _ in guard let model = self else { return }; Task { @MainActor in await model.refresh(); model.startPolling() } } }
     func refresh() async { guard !isRefreshing else { return }; isRefreshing = true; defer { isRefreshing = false; lastRefresh = .now }; errorMessage = nil
         await refreshRepos()
         var reviews: [PullRequest] = []; var authored: [PullRequest] = []

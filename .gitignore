@@ -1,0 +1,5 @@
+.build/
+.swiftpm/
+GitPulse.app/
+.DS_Store
+

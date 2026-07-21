@@ -1,0 +1,63 @@
+name: Build and release GitPulse
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build (${{ matrix.arch }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-14
+            arch: arm64
+          - runner: macos-13
+            arch: x86_64
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build release binary
+        run: swift build -c release --arch "${{ matrix.arch }}"
+      - name: Stage binary
+        run: |
+          mkdir -p staging
+          cp ".build/${{ matrix.arch }}-apple-macosx/release/GitPulse" staging/GitPulse
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GitPulse-${{ matrix.arch }}
+          path: staging/GitPulse
+          if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Create universal app bundle
+        run: |
+          mkdir -p GitPulse.app/Contents/MacOS GitPulse.app/Contents/Resources
+          lipo -create artifacts/GitPulse-arm64/GitPulse artifacts/GitPulse-x86_64/GitPulse -output GitPulse.app/Contents/MacOS/GitPulse
+          cp AppResources/Info.plist GitPulse.app/Contents/Info.plist
+          codesign --force --deep --sign - GitPulse.app
+          ditto -c -k --sequesterRsrc --keepParent GitPulse.app GitPulse-universal.zip
+          file GitPulse.app/Contents/MacOS/GitPulse
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          gh release create "$TAG" GitPulse-universal.zip \
+            --title "GitPulse ${TAG#v}" \
+            --notes-file RELEASE_NOTES.md \
+            --generate-notes \
+            --verify-tag
